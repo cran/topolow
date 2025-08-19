@@ -1,0 +1,1415 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Omid Arhami" />
+
+<meta name="date" content="2025-08-04" />
+
+<title>Comparative Analysis of Embedding Methods for Non-Euclidean Dissimilarity Data: A Comprehensive Evaluation of Topolow</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Comparative Analysis of Embedding Methods
+for Non-Euclidean Dissimilarity Data: A Comprehensive Evaluation of
+Topolow</h1>
+<h4 class="author">Omid Arhami</h4>
+<h4 class="date">2025-08-04</h4>
+
+
+<div id="TOC">
+<ul>
+<li><a href="#abstract" id="toc-abstract"><span class="toc-section-number">1</span> Abstract</a></li>
+<li><a href="#introduction" id="toc-introduction"><span class="toc-section-number">2</span> Introduction</a>
+<ul>
+<li><a href="#methodological-framework" id="toc-methodological-framework"><span class="toc-section-number">2.1</span> Methodological Framework</a></li>
+</ul></li>
+<li><a href="#data-generation-methodologies" id="toc-data-generation-methodologies"><span class="toc-section-number">3</span> Data Generation Methodologies</a>
+<ul>
+<li><a href="#method-1-synthesized-non-euclidean-space" id="toc-method-1-synthesized-non-euclidean-space"><span class="toc-section-number">3.1</span> Method 1: Synthesized
+non-Euclidean Space</a></li>
+<li><a href="#method-2-swiss-roll-manifold" id="toc-method-2-swiss-roll-manifold"><span class="toc-section-number">3.2</span> Method 2: Swiss Roll
+Manifold</a></li>
+</ul></li>
+<li><a href="#experimental-design-and-analysis-pipeline" id="toc-experimental-design-and-analysis-pipeline"><span class="toc-section-number">4</span> Experimental Design and Analysis
+Pipeline</a></li>
+<li><a href="#results-synthesized-non-euclidean-data" id="toc-results-synthesized-non-euclidean-data"><span class="toc-section-number">5</span> Results: Synthesized non-Euclidean
+Data</a>
+<ul>
+<li><a href="#eigenvalue-spectrum-analysis---synthesized-non-euclidean" id="toc-eigenvalue-spectrum-analysis---synthesized-non-euclidean"><span class="toc-section-number">5.1</span> Eigenvalue Spectrum Analysis -
+Synthesized non-Euclidean</a></li>
+<li><a href="#performance-comparison---synthesized-non-euclidean" id="toc-performance-comparison---synthesized-non-euclidean"><span class="toc-section-number">5.2</span> Performance Comparison -
+Synthesized non-Euclidean</a></li>
+</ul></li>
+<li><a href="#results-swiss-roll-manifold-data" id="toc-results-swiss-roll-manifold-data"><span class="toc-section-number">6</span> Results: Swiss Roll Manifold
+Data</a>
+<ul>
+<li><a href="#eigenvalue-spectrum-analysis---swiss-roll" id="toc-eigenvalue-spectrum-analysis---swiss-roll"><span class="toc-section-number">6.1</span> Eigenvalue Spectrum Analysis -
+Swiss Roll</a></li>
+<li><a href="#performance-comparison---swiss-roll" id="toc-performance-comparison---swiss-roll"><span class="toc-section-number">6.2</span> Performance Comparison - Swiss
+Roll</a></li>
+</ul></li>
+<li><a href="#comparative-analysis-across-dataset-types" id="toc-comparative-analysis-across-dataset-types"><span class="toc-section-number">7</span> Comparative Analysis Across Dataset
+Types</a>
+<ul>
+<li><a href="#combined-performance-analysis" id="toc-combined-performance-analysis"><span class="toc-section-number">7.1</span> Combined Performance
+Analysis</a></li>
+<li><a href="#statistical-comparisons" id="toc-statistical-comparisons"><span class="toc-section-number">7.2</span> Statistical Comparisons</a></li>
+<li><a href="#distance-preservation-analysis" id="toc-distance-preservation-analysis"><span class="toc-section-number">7.3</span> Distance Preservation
+Analysis</a></li>
+</ul></li>
+<li><a href="#discussion" id="toc-discussion"><span class="toc-section-number">8</span> Discussion</a>
+<ul>
+<li><a href="#key-findings" id="toc-key-findings"><span class="toc-section-number">8.1</span> Key Findings</a>
+<ul>
+<li><a href="#non-euclidean-character-assessment" id="toc-non-euclidean-character-assessment"><span class="toc-section-number">8.1.1</span> 1. Non-Euclidean Character
+Assessment</a></li>
+<li><a href="#method-performance-characteristics" id="toc-method-performance-characteristics"><span class="toc-section-number">8.1.2</span> 2. Method Performance
+Characteristics</a></li>
+<li><a href="#distance-preservation-quality" id="toc-distance-preservation-quality"><span class="toc-section-number">8.1.3</span> 3. Distance Preservation
+Quality</a></li>
+</ul></li>
+<li><a href="#methodological-implications" id="toc-methodological-implications"><span class="toc-section-number">8.2</span> Methodological Implications</a>
+<ul>
+<li><a href="#for-sparse-data" id="toc-for-sparse-data"><span class="toc-section-number">8.2.1</span> For Sparse Data</a></li>
+<li><a href="#for-non-euclidean-data" id="toc-for-non-euclidean-data"><span class="toc-section-number">8.2.2</span> For Non-Euclidean Data</a></li>
+<li><a href="#parameter-optimization" id="toc-parameter-optimization"><span class="toc-section-number">8.2.3</span> Parameter Optimization</a></li>
+</ul></li>
+<li><a href="#limitations-and-future-directions" id="toc-limitations-and-future-directions"><span class="toc-section-number">8.3</span> Limitations and Future
+Directions</a>
+<ul>
+<li><a href="#current-limitations" id="toc-current-limitations"><span class="toc-section-number">8.3.1</span> Current Limitations</a></li>
+<li><a href="#future-research-directions" id="toc-future-research-directions"><span class="toc-section-number">8.3.2</span> Future Research
+Directions</a></li>
+</ul></li>
+</ul></li>
+<li><a href="#conclusions" id="toc-conclusions"><span class="toc-section-number">9</span> Conclusions</a>
+<ul>
+<li><a href="#for-practitioners" id="toc-for-practitioners"><span class="toc-section-number">9.1</span> For Practitioners</a></li>
+<li><a href="#for-method-developers" id="toc-for-method-developers"><span class="toc-section-number">9.2</span> For Method Developers</a></li>
+<li><a href="#scientific-impact" id="toc-scientific-impact"><span class="toc-section-number">9.3</span> Scientific Impact</a></li>
+</ul></li>
+<li><a href="#session-information" id="toc-session-information"><span class="toc-section-number">10</span> Session Information</a></li>
+</ul>
+</div>
+
+<div id="abstract" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Abstract</h1>
+<p>This vignette presents a comprehensive comparative analysis of
+embedding methods for non-Euclidean dissimilarity data, with particular
+focus on the Topolow algorithm. We evaluate three fundamentally
+different approaches: Topolow (force-directed optimization), Classical
+Multidimensional Scaling (eigenvalue decomposition), and Iterative MDS
+(STRESS minimization) across two distinct types of non-Euclidean
+datasets. Our analysis demonstrates the relative strengths and
+limitations of each method when dealing with incomplete, non-metric
+dissimilarity matrices that violate fundamental assumptions of Euclidean
+geometry.</p>
+</div>
+<div id="introduction" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Introduction</h1>
+<p>The embedding of high-dimensional or non-metric dissimilarity data
+into low-dimensional Euclidean spaces is a fundamental problem in
+computational statistics, bioinformatics, and machine learning. While
+classical methods such as Multidimensional Scaling (MDS) provide
+theoretically optimal solutions under ideal conditions, real-world
+datasets often exhibit characteristics that challenge these assumptions:
+sparse measurements, non-Euclidean geometry, and threshold-censored
+observations.</p>
+<p>The Topolow algorithm represents a novel approach to this problem,
+utilizing physics-inspired force-directed optimization to handle these
+challenging data characteristics naturally. This vignette provides a
+rigorous comparative evaluation of Topolow against established methods
+using controlled synthetic datasets that exhibit known non-Euclidean
+properties.</p>
+<div id="methodological-framework" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Methodological
+Framework</h2>
+<p>We evaluate three distinct embedding approaches:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Topolow</strong>: A force-directed method that models
+objects as particles connected by springs (for measured dissimilarities)
+and subject to repulsive forces (for missing measurements)</li>
+<li><strong>Classical MDS</strong>: The mathematically optimal
+eigenvalue-based solution that provides the theoretical best-case
+Euclidean approximation</li>
+<li><strong>Iterative MDS</strong>: A gradient-based STRESS minimization
+approach that uses stochastic optimization similar to Topolow</li>
+</ol>
+<p>This three-method comparison allows us to understand both the
+theoretical limits of embedding accuracy and the practical differences
+in optimization stability between deterministic and stochastic
+methods.</p>
+</div>
+</div>
+<div id="data-generation-methodologies" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Data Generation
+Methodologies</h1>
+<p>We employ two distinct data generation methods to create
+non-Euclidean datasets with controlled properties, allowing for
+systematic evaluation of embedding performance under different types of
+geometric violations.</p>
+<div id="method-1-synthesized-non-euclidean-space" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Method 1: Synthesized
+non-Euclidean Space</h2>
+<p>This approach creates non-Euclidean data by systematically distorting
+a high-dimensional clustered dataset through non-linear transformations
+and asymmetric noise injection.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co">#&#39; Generate Non-Euclidean Data by Distorting Clustered Points</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co">#&#39; Creates non-Euclidean data through systematic distortion of clustered high-dimensional points.</span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#&#39; This method is particularly effective for testing robustness to violations of the triangle inequality.</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#&#39; @param n_objects Number of objects to generate</span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#&#39; @param initial_dims Dimensionality of the initial latent space</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#&#39; @param n_clusters Number of clusters to form</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#&#39; @param noise_factor Magnitude of asymmetric noise to add</span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&#39; @param missing_fraction Proportion of distances to set to NA</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="co">#&#39; @return List containing complete and incomplete distance matrices</span></span>
+<span id="cb1-12"><a href="#cb1-12" tabindex="-1"></a>generate_distorted_euclidean_data <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">n_objects =</span> <span class="dv">50</span>, </span>
+<span id="cb1-13"><a href="#cb1-13" tabindex="-1"></a>                                              <span class="at">initial_dims =</span> <span class="dv">10</span>, </span>
+<span id="cb1-14"><a href="#cb1-14" tabindex="-1"></a>                                              <span class="at">n_clusters =</span> <span class="dv">8</span>, </span>
+<span id="cb1-15"><a href="#cb1-15" tabindex="-1"></a>                                              <span class="at">noise_factor =</span> <span class="fl">0.3</span>, </span>
+<span id="cb1-16"><a href="#cb1-16" tabindex="-1"></a>                                              <span class="at">missing_fraction =</span> <span class="fl">0.30</span>) {</span>
+<span id="cb1-17"><a href="#cb1-17" tabindex="-1"></a>  </span>
+<span id="cb1-18"><a href="#cb1-18" tabindex="-1"></a>  object_names <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;Object_&quot;</span>, <span class="fu">sprintf</span>(<span class="st">&quot;%02d&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_objects))</span>
+<span id="cb1-19"><a href="#cb1-19" tabindex="-1"></a>  </span>
+<span id="cb1-20"><a href="#cb1-20" tabindex="-1"></a>  <span class="co"># Generate structured high-dimensional coordinates</span></span>
+<span id="cb1-21"><a href="#cb1-21" tabindex="-1"></a>  cluster_size <span class="ot">&lt;-</span> n_objects <span class="sc">%/%</span> n_clusters</span>
+<span id="cb1-22"><a href="#cb1-22" tabindex="-1"></a>  cluster_centers <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">rnorm</span>(n_clusters <span class="sc">*</span> initial_dims, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="dv">4</span>), </span>
+<span id="cb1-23"><a href="#cb1-23" tabindex="-1"></a>                           <span class="at">nrow =</span> n_clusters, <span class="at">ncol =</span> initial_dims)</span>
+<span id="cb1-24"><a href="#cb1-24" tabindex="-1"></a>  initial_coords <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="at">nrow =</span> n_objects, <span class="at">ncol =</span> initial_dims)</span>
+<span id="cb1-25"><a href="#cb1-25" tabindex="-1"></a>  <span class="fu">rownames</span>(initial_coords) <span class="ot">&lt;-</span> object_names</span>
+<span id="cb1-26"><a href="#cb1-26" tabindex="-1"></a>  </span>
+<span id="cb1-27"><a href="#cb1-27" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_objects) {</span>
+<span id="cb1-28"><a href="#cb1-28" tabindex="-1"></a>    cluster_id <span class="ot">&lt;-</span> ((i <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">%/%</span> cluster_size) <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb1-29"><a href="#cb1-29" tabindex="-1"></a>    <span class="cf">if</span>(cluster_id <span class="sc">&gt;</span> n_clusters) cluster_id <span class="ot">&lt;-</span> n_clusters</span>
+<span id="cb1-30"><a href="#cb1-30" tabindex="-1"></a>    initial_coords[i, ] <span class="ot">&lt;-</span> cluster_centers[cluster_id, ] <span class="sc">+</span> </span>
+<span id="cb1-31"><a href="#cb1-31" tabindex="-1"></a>                          <span class="fu">rnorm</span>(initial_dims, <span class="at">mean =</span> <span class="dv">0</span>, <span class="at">sd =</span> <span class="fl">1.5</span>)</span>
+<span id="cb1-32"><a href="#cb1-32" tabindex="-1"></a>  }</span>
+<span id="cb1-33"><a href="#cb1-33" tabindex="-1"></a>  </span>
+<span id="cb1-34"><a href="#cb1-34" tabindex="-1"></a>  <span class="co"># Calculate foundational Euclidean distances</span></span>
+<span id="cb1-35"><a href="#cb1-35" tabindex="-1"></a>  euclidean_distances <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(initial_coords, <span class="at">method =</span> <span class="st">&quot;euclidean&quot;</span>))</span>
+<span id="cb1-36"><a href="#cb1-36" tabindex="-1"></a>  </span>
+<span id="cb1-37"><a href="#cb1-37" tabindex="-1"></a>  <span class="co"># Apply non-linear transformations</span></span>
+<span id="cb1-38"><a href="#cb1-38" tabindex="-1"></a>  dist_quantiles <span class="ot">&lt;-</span> <span class="fu">quantile</span>(euclidean_distances[<span class="fu">upper.tri</span>(euclidean_distances)], </span>
+<span id="cb1-39"><a href="#cb1-39" tabindex="-1"></a>                            <span class="fu">c</span>(<span class="fl">0.33</span>, <span class="fl">0.66</span>))</span>
+<span id="cb1-40"><a href="#cb1-40" tabindex="-1"></a>  transform_1 <span class="ot">&lt;-</span> euclidean_distances</span>
+<span id="cb1-41"><a href="#cb1-41" tabindex="-1"></a>  transform_1[euclidean_distances <span class="sc">&lt;=</span> dist_quantiles[<span class="dv">1</span>]] <span class="ot">&lt;-</span> </span>
+<span id="cb1-42"><a href="#cb1-42" tabindex="-1"></a>    euclidean_distances[euclidean_distances <span class="sc">&lt;=</span> dist_quantiles[<span class="dv">1</span>]]<span class="sc">^</span><span class="fl">1.3</span></span>
+<span id="cb1-43"><a href="#cb1-43" tabindex="-1"></a>  transform_1[euclidean_distances <span class="sc">&gt;</span> dist_quantiles[<span class="dv">1</span>] <span class="sc">&amp;</span> </span>
+<span id="cb1-44"><a href="#cb1-44" tabindex="-1"></a>             euclidean_distances <span class="sc">&lt;=</span> dist_quantiles[<span class="dv">2</span>]] <span class="ot">&lt;-</span> </span>
+<span id="cb1-45"><a href="#cb1-45" tabindex="-1"></a>    euclidean_distances[euclidean_distances <span class="sc">&gt;</span> dist_quantiles[<span class="dv">1</span>] <span class="sc">&amp;</span> </span>
+<span id="cb1-46"><a href="#cb1-46" tabindex="-1"></a>                       euclidean_distances <span class="sc">&lt;=</span> dist_quantiles[<span class="dv">2</span>]]<span class="sc">^</span><span class="fl">1.6</span></span>
+<span id="cb1-47"><a href="#cb1-47" tabindex="-1"></a>  transform_1[euclidean_distances <span class="sc">&gt;</span> dist_quantiles[<span class="dv">2</span>]] <span class="ot">&lt;-</span> </span>
+<span id="cb1-48"><a href="#cb1-48" tabindex="-1"></a>    euclidean_distances[euclidean_distances <span class="sc">&gt;</span> dist_quantiles[<span class="dv">2</span>]]<span class="sc">^</span><span class="fl">1.8</span></span>
+<span id="cb1-49"><a href="#cb1-49" tabindex="-1"></a>  </span>
+<span id="cb1-50"><a href="#cb1-50" tabindex="-1"></a>  <span class="co"># Add asymmetric noise</span></span>
+<span id="cb1-51"><a href="#cb1-51" tabindex="-1"></a>  asymmetric_noise <span class="ot">&lt;-</span> transform_1 <span class="sc">*</span> noise_factor <span class="sc">*</span> </span>
+<span id="cb1-52"><a href="#cb1-52" tabindex="-1"></a>                     <span class="fu">matrix</span>(<span class="fu">runif</span>(n_objects<span class="sc">^</span><span class="dv">2</span>, <span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>), <span class="at">nrow =</span> n_objects)</span>
+<span id="cb1-53"><a href="#cb1-53" tabindex="-1"></a>  asymmetric_noise <span class="ot">&lt;-</span> (asymmetric_noise <span class="sc">+</span> <span class="fu">t</span>(asymmetric_noise)) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb1-54"><a href="#cb1-54" tabindex="-1"></a>  transform_2 <span class="ot">&lt;-</span> transform_1 <span class="sc">+</span> asymmetric_noise</span>
+<span id="cb1-55"><a href="#cb1-55" tabindex="-1"></a>  transform_2[transform_2 <span class="sc">&lt;</span> <span class="dv">0</span>] <span class="ot">&lt;-</span> <span class="fl">0.01</span></span>
+<span id="cb1-56"><a href="#cb1-56" tabindex="-1"></a>  </span>
+<span id="cb1-57"><a href="#cb1-57" tabindex="-1"></a>  <span class="co"># Create final non-Euclidean distance matrix</span></span>
+<span id="cb1-58"><a href="#cb1-58" tabindex="-1"></a>  complete_non_euclidean_distances <span class="ot">&lt;-</span> transform_2</span>
+<span id="cb1-59"><a href="#cb1-59" tabindex="-1"></a>  <span class="fu">diag</span>(complete_non_euclidean_distances) <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb1-60"><a href="#cb1-60" tabindex="-1"></a>  </span>
+<span id="cb1-61"><a href="#cb1-61" tabindex="-1"></a>  <span class="co"># Introduce missing values</span></span>
+<span id="cb1-62"><a href="#cb1-62" tabindex="-1"></a>  total_unique_pairs <span class="ot">&lt;-</span> n_objects <span class="sc">*</span> (n_objects <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb1-63"><a href="#cb1-63" tabindex="-1"></a>  target_missing_pairs <span class="ot">&lt;-</span> <span class="fu">round</span>(total_unique_pairs <span class="sc">*</span> missing_fraction)</span>
+<span id="cb1-64"><a href="#cb1-64" tabindex="-1"></a>  </span>
+<span id="cb1-65"><a href="#cb1-65" tabindex="-1"></a>  upper_tri_indices <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">upper.tri</span>(complete_non_euclidean_distances), <span class="at">arr.ind =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-66"><a href="#cb1-66" tabindex="-1"></a>  missing_pair_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(upper_tri_indices), target_missing_pairs)</span>
+<span id="cb1-67"><a href="#cb1-67" tabindex="-1"></a>  </span>
+<span id="cb1-68"><a href="#cb1-68" tabindex="-1"></a>  incomplete_distances <span class="ot">&lt;-</span> complete_non_euclidean_distances</span>
+<span id="cb1-69"><a href="#cb1-69" tabindex="-1"></a>  incomplete_distances[upper_tri_indices[missing_pair_indices,]] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb1-70"><a href="#cb1-70" tabindex="-1"></a>  incomplete_distances[upper_tri_indices[missing_pair_indices, <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>)]] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb1-71"><a href="#cb1-71" tabindex="-1"></a>  </span>
+<span id="cb1-72"><a href="#cb1-72" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(</span>
+<span id="cb1-73"><a href="#cb1-73" tabindex="-1"></a>    <span class="at">complete_distances =</span> complete_non_euclidean_distances,</span>
+<span id="cb1-74"><a href="#cb1-74" tabindex="-1"></a>    <span class="at">incomplete_distances =</span> incomplete_distances,</span>
+<span id="cb1-75"><a href="#cb1-75" tabindex="-1"></a>    <span class="at">object_names =</span> object_names,</span>
+<span id="cb1-76"><a href="#cb1-76" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">&quot;Synthesized non-Euclidean&quot;</span></span>
+<span id="cb1-77"><a href="#cb1-77" tabindex="-1"></a>  ))</span>
+<span id="cb1-78"><a href="#cb1-78" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="method-2-swiss-roll-manifold" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Method 2: Swiss Roll
+Manifold</h2>
+<p>This approach generates data points on a 2D “Swiss Roll” manifold
+embedded in 3D space, where true distances are geodesic (along the
+manifold surface) and thus inherently non-Euclidean from a 3D
+perspective. x = t * cos(t), y = height, z = t * sin(t), t = 1.5 * pi *
+(1 + 2runif)</p>
+<p>Marsland, “Machine Learning: An Algorithmic Perspective”, 2nd
+edition, Chapter 6, 2014</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="co">#&#39; Generate Non-Euclidean Data from a Swiss Roll Manifold</span></span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co">#&#39; Creates data points on a Swiss Roll manifold where geodesic distances</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="co">#&#39; are inherently non-Euclidean. Includes &quot;tunneling&quot; effects common in real-world manifold data.</span></span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&#39; @param n_objects Number of points on the manifold</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&#39; @param noise Standard deviation of Gaussian noise added to points</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&#39; @param tunnel_fraction Fraction of distances to replace with Euclidean shortcuts</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&#39; @param missing_fraction Proportion of final distances to set to NA</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&#39; @return List containing complete and incomplete distance matrices</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a>generate_swiss_roll_data <span class="ot">&lt;-</span> <span class="cf">function</span>(<span class="at">n_objects =</span> <span class="dv">50</span>, </span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a>                                     <span class="at">noise =</span> <span class="fl">0.05</span>, </span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a>                                     <span class="at">tunnel_fraction =</span> <span class="fl">0.05</span>, </span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a>                                     <span class="at">missing_fraction =</span> <span class="fl">0.30</span>) {</span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a>  <span class="co"># Check if required packages are available</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;RANN&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;RANN package is required for this function. Please install it.&quot;</span>)</span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a>  }</span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">requireNamespace</span>(<span class="st">&quot;igraph&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">&quot;igraph package is required for this function. Please install it.&quot;</span>)</span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>  }</span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>  <span class="co"># Generate points on the Swiss Roll</span></span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a>  t <span class="ot">&lt;-</span> <span class="fl">1.5</span> <span class="sc">*</span> pi <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">runif</span>(n_objects))</span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a>  height <span class="ot">&lt;-</span> <span class="dv">21</span> <span class="sc">*</span> <span class="fu">runif</span>(n_objects)</span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a>  </span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a>  x <span class="ot">&lt;-</span> t <span class="sc">*</span> <span class="fu">cos</span>(t)</span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a>  y <span class="ot">&lt;-</span> height</span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a>  z <span class="ot">&lt;-</span> t <span class="sc">*</span> <span class="fu">sin</span>(t)</span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a>  </span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a>  points_3d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">z =</span> z) <span class="sc">+</span> <span class="fu">rnorm</span>(n_objects <span class="sc">*</span> <span class="dv">3</span>, <span class="at">sd =</span> noise)</span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a>  object_names <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="st">&quot;Object_&quot;</span>, <span class="fu">sprintf</span>(<span class="st">&quot;%02d&quot;</span>, <span class="dv">1</span><span class="sc">:</span>n_objects))</span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a>  <span class="fu">rownames</span>(points_3d) <span class="ot">&lt;-</span> object_names</span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a>  </span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a>  <span class="co"># Calculate geodesic distances via k-NN graph</span></span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">requireNamespace</span>(<span class="st">&quot;RANN&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a>    knn_graph <span class="ot">&lt;-</span> RANN<span class="sc">::</span><span class="fu">nn2</span>(points_3d, <span class="at">k =</span> <span class="fu">min</span>(<span class="dv">10</span>, n_objects<span class="dv">-1</span>))<span class="sc">$</span>nn.idx</span>
+<span id="cb2-38"><a href="#cb2-38" tabindex="-1"></a>    adj_matrix <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, n_objects, n_objects)</span>
+<span id="cb2-39"><a href="#cb2-39" tabindex="-1"></a>    <span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_objects) {</span>
+<span id="cb2-40"><a href="#cb2-40" tabindex="-1"></a>      <span class="cf">for</span> (j_idx <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="fu">min</span>(<span class="dv">10</span>, n_objects)) {</span>
+<span id="cb2-41"><a href="#cb2-41" tabindex="-1"></a>        <span class="cf">if</span>(j_idx <span class="sc">&lt;=</span> <span class="fu">ncol</span>(knn_graph)) {</span>
+<span id="cb2-42"><a href="#cb2-42" tabindex="-1"></a>          j <span class="ot">&lt;-</span> knn_graph[i, j_idx]</span>
+<span id="cb2-43"><a href="#cb2-43" tabindex="-1"></a>          dist_ij <span class="ot">&lt;-</span> <span class="fu">dist</span>(<span class="fu">rbind</span>(points_3d[i,], points_3d[j,]))</span>
+<span id="cb2-44"><a href="#cb2-44" tabindex="-1"></a>          adj_matrix[i, j] <span class="ot">&lt;-</span> dist_ij</span>
+<span id="cb2-45"><a href="#cb2-45" tabindex="-1"></a>          adj_matrix[j, i] <span class="ot">&lt;-</span> dist_ij</span>
+<span id="cb2-46"><a href="#cb2-46" tabindex="-1"></a>        }</span>
+<span id="cb2-47"><a href="#cb2-47" tabindex="-1"></a>      }</span>
+<span id="cb2-48"><a href="#cb2-48" tabindex="-1"></a>    }</span>
+<span id="cb2-49"><a href="#cb2-49" tabindex="-1"></a>    </span>
+<span id="cb2-50"><a href="#cb2-50" tabindex="-1"></a>    g <span class="ot">&lt;-</span> igraph<span class="sc">::</span><span class="fu">graph_from_adjacency_matrix</span>(adj_matrix, <span class="at">mode =</span> <span class="st">&quot;undirected&quot;</span>, <span class="at">weighted =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-51"><a href="#cb2-51" tabindex="-1"></a>    geodesic_distances <span class="ot">&lt;-</span> igraph<span class="sc">::</span><span class="fu">distances</span>(g)</span>
+<span id="cb2-52"><a href="#cb2-52" tabindex="-1"></a>    geodesic_distances[<span class="fu">is.infinite</span>(geodesic_distances)] <span class="ot">&lt;-</span> </span>
+<span id="cb2-53"><a href="#cb2-53" tabindex="-1"></a>      <span class="fu">max</span>(geodesic_distances[<span class="fu">is.finite</span>(geodesic_distances)]) <span class="sc">*</span> <span class="fl">1.5</span></span>
+<span id="cb2-54"><a href="#cb2-54" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb2-55"><a href="#cb2-55" tabindex="-1"></a>    <span class="co"># Fallback to Euclidean if RANN not available</span></span>
+<span id="cb2-56"><a href="#cb2-56" tabindex="-1"></a>    geodesic_distances <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(points_3d))</span>
+<span id="cb2-57"><a href="#cb2-57" tabindex="-1"></a>    <span class="fu">warning</span>(<span class="st">&quot;RANN package not available. Using Euclidean distances as approximation.&quot;</span>)</span>
+<span id="cb2-58"><a href="#cb2-58" tabindex="-1"></a>  }</span>
+<span id="cb2-59"><a href="#cb2-59" tabindex="-1"></a>  </span>
+<span id="cb2-60"><a href="#cb2-60" tabindex="-1"></a>  <span class="co"># Introduce &quot;tunnels&quot; or &quot;short-circuits&quot;</span></span>
+<span id="cb2-61"><a href="#cb2-61" tabindex="-1"></a>  euclidean_distances <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(points_3d))</span>
+<span id="cb2-62"><a href="#cb2-62" tabindex="-1"></a>  n_tunnels <span class="ot">&lt;-</span> <span class="fu">round</span>(tunnel_fraction <span class="sc">*</span> n_objects <span class="sc">*</span> (n_objects <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="dv">2</span>)</span>
+<span id="cb2-63"><a href="#cb2-63" tabindex="-1"></a>  </span>
+<span id="cb2-64"><a href="#cb2-64" tabindex="-1"></a>  upper_tri_indices <span class="ot">&lt;-</span> <span class="fu">which</span>(<span class="fu">upper.tri</span>(geodesic_distances), <span class="at">arr.ind =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-65"><a href="#cb2-65" tabindex="-1"></a>  tunnel_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(upper_tri_indices), <span class="fu">min</span>(n_tunnels, <span class="fu">nrow</span>(upper_tri_indices)))</span>
+<span id="cb2-66"><a href="#cb2-66" tabindex="-1"></a>  </span>
+<span id="cb2-67"><a href="#cb2-67" tabindex="-1"></a>  complete_distances <span class="ot">&lt;-</span> geodesic_distances</span>
+<span id="cb2-68"><a href="#cb2-68" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">length</span>(tunnel_indices) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb2-69"><a href="#cb2-69" tabindex="-1"></a>    <span class="cf">for</span> (k <span class="cf">in</span> tunnel_indices) {</span>
+<span id="cb2-70"><a href="#cb2-70" tabindex="-1"></a>      i <span class="ot">&lt;-</span> upper_tri_indices[k, <span class="dv">1</span>]</span>
+<span id="cb2-71"><a href="#cb2-71" tabindex="-1"></a>      j <span class="ot">&lt;-</span> upper_tri_indices[k, <span class="dv">2</span>]</span>
+<span id="cb2-72"><a href="#cb2-72" tabindex="-1"></a>      complete_distances[i, j] <span class="ot">&lt;-</span> complete_distances[j, i] <span class="ot">&lt;-</span> euclidean_distances[i, j]</span>
+<span id="cb2-73"><a href="#cb2-73" tabindex="-1"></a>    }</span>
+<span id="cb2-74"><a href="#cb2-74" tabindex="-1"></a>  }</span>
+<span id="cb2-75"><a href="#cb2-75" tabindex="-1"></a>  <span class="fu">diag</span>(complete_distances) <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb2-76"><a href="#cb2-76" tabindex="-1"></a>  </span>
+<span id="cb2-77"><a href="#cb2-77" tabindex="-1"></a>  <span class="co"># Introduce missing values</span></span>
+<span id="cb2-78"><a href="#cb2-78" tabindex="-1"></a>  total_unique_pairs <span class="ot">&lt;-</span> n_objects <span class="sc">*</span> (n_objects <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb2-79"><a href="#cb2-79" tabindex="-1"></a>  target_missing_pairs <span class="ot">&lt;-</span> <span class="fu">round</span>(total_unique_pairs <span class="sc">*</span> missing_fraction)</span>
+<span id="cb2-80"><a href="#cb2-80" tabindex="-1"></a>  </span>
+<span id="cb2-81"><a href="#cb2-81" tabindex="-1"></a>  missing_pair_indices <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="fu">nrow</span>(upper_tri_indices), </span>
+<span id="cb2-82"><a href="#cb2-82" tabindex="-1"></a>                                <span class="fu">min</span>(target_missing_pairs, <span class="fu">nrow</span>(upper_tri_indices)))</span>
+<span id="cb2-83"><a href="#cb2-83" tabindex="-1"></a>  </span>
+<span id="cb2-84"><a href="#cb2-84" tabindex="-1"></a>  incomplete_distances <span class="ot">&lt;-</span> complete_distances</span>
+<span id="cb2-85"><a href="#cb2-85" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">length</span>(missing_pair_indices) <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb2-86"><a href="#cb2-86" tabindex="-1"></a>    incomplete_distances[upper_tri_indices[missing_pair_indices,]] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb2-87"><a href="#cb2-87" tabindex="-1"></a>    incomplete_distances[upper_tri_indices[missing_pair_indices, <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>)]] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb2-88"><a href="#cb2-88" tabindex="-1"></a>  }</span>
+<span id="cb2-89"><a href="#cb2-89" tabindex="-1"></a>  </span>
+<span id="cb2-90"><a href="#cb2-90" tabindex="-1"></a>  <span class="fu">rownames</span>(complete_distances) <span class="ot">&lt;-</span> object_names</span>
+<span id="cb2-91"><a href="#cb2-91" tabindex="-1"></a>  <span class="fu">colnames</span>(complete_distances) <span class="ot">&lt;-</span> object_names</span>
+<span id="cb2-92"><a href="#cb2-92" tabindex="-1"></a>  <span class="fu">rownames</span>(incomplete_distances) <span class="ot">&lt;-</span> object_names</span>
+<span id="cb2-93"><a href="#cb2-93" tabindex="-1"></a>  <span class="fu">colnames</span>(incomplete_distances) <span class="ot">&lt;-</span> object_names</span>
+<span id="cb2-94"><a href="#cb2-94" tabindex="-1"></a>  </span>
+<span id="cb2-95"><a href="#cb2-95" tabindex="-1"></a>  <span class="fu">return</span>(<span class="fu">list</span>(</span>
+<span id="cb2-96"><a href="#cb2-96" tabindex="-1"></a>    <span class="at">complete_distances =</span> complete_distances,</span>
+<span id="cb2-97"><a href="#cb2-97" tabindex="-1"></a>    <span class="at">incomplete_distances =</span> incomplete_distances,</span>
+<span id="cb2-98"><a href="#cb2-98" tabindex="-1"></a>    <span class="at">object_names =</span> object_names,</span>
+<span id="cb2-99"><a href="#cb2-99" tabindex="-1"></a>    <span class="at">method =</span> <span class="st">&quot;Swiss Roll Manifold&quot;</span></span>
+<span id="cb2-100"><a href="#cb2-100" tabindex="-1"></a>  ))</span>
+<span id="cb2-101"><a href="#cb2-101" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+</div>
+<div id="experimental-design-and-analysis-pipeline" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Experimental Design and
+Analysis Pipeline</h1>
+<p>Our analysis follows a standardized pipeline for each dataset
+type:</p>
+<ol style="list-style-type: decimal">
+<li><strong>Data Generation</strong> with controlled non-Euclidean
+characteristics</li>
+<li><strong>Geometric Assessment</strong> via eigenvalue analysis of the
+Gram matrix</li>
+<li><strong>Parameter Optimization</strong> using the Euclidify
+automated workflow</li>
+<li><strong>Three-Method Comparison</strong> with multiple runs for
+stochastic methods</li>
+<li><strong>Performance Evaluation</strong> and statistical
+analysis</li>
+<li><strong>Distance Preservation Assessment</strong></li>
+</ol>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co">#&#39; Comprehensive analysis pipeline for embedding method comparison</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a><span class="co">#&#39;</span></span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a><span class="co">#&#39; @param data_gen_func Function to generate the dataset</span></span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a><span class="co">#&#39; @param dataset_name Name for the dataset (for labeling)</span></span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a><span class="co">#&#39; @param n_objects Number of objects in the dataset</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a><span class="co">#&#39; @param n_runs Number of runs for stochastic methods</span></span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a>run_comprehensive_analysis <span class="ot">&lt;-</span> <span class="cf">function</span>(data_gen_func, dataset_name, <span class="at">n_objects =</span> <span class="dv">50</span>, <span class="at">n_runs =</span> <span class="dv">50</span>) {</span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a>  </span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;=== ANALYSIS FOR&quot;</span>, <span class="fu">toupper</span>(dataset_name), <span class="st">&quot;===</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a>  </span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a>  <span class="co"># Step 1: Data Generation</span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">1. Generating&quot;</span>, dataset_name, <span class="st">&quot;dataset...</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a>  data_gen_output <span class="ot">&lt;-</span> <span class="fu">data_gen_func</span>(<span class="at">n_objects =</span> n_objects, <span class="at">missing_fraction =</span> <span class="fl">0.3</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a>  </span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a>  complete_distances_for_evaluation <span class="ot">&lt;-</span> data_gen_output<span class="sc">$</span>complete_distances</span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a>  incomplete_distances_for_embedding <span class="ot">&lt;-</span> data_gen_output<span class="sc">$</span>incomplete_distances</span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a>  object_names <span class="ot">&lt;-</span> data_gen_output<span class="sc">$</span>object_names</span>
+<span id="cb3-18"><a href="#cb3-18" tabindex="-1"></a>  </span>
+<span id="cb3-19"><a href="#cb3-19" tabindex="-1"></a>  actual_missing_percentage <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(incomplete_distances_for_embedding)) <span class="sc">/</span> </span>
+<span id="cb3-20"><a href="#cb3-20" tabindex="-1"></a>                              (n_objects <span class="sc">*</span> (n_objects<span class="dv">-1</span>)) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb3-21"><a href="#cb3-21" tabindex="-1"></a>  </span>
+<span id="cb3-22"><a href="#cb3-22" tabindex="-1"></a>  data_quality <span class="ot">&lt;-</span> <span class="fu">calculate_data_quality_metrics</span>(incomplete_distances_for_embedding)</span>
+<span id="cb3-23"><a href="#cb3-23" tabindex="-1"></a>  </span>
+<span id="cb3-24"><a href="#cb3-24" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Generated dataset with&quot;</span>, n_objects, <span class="st">&quot;objects and&quot;</span>, </span>
+<span id="cb3-25"><a href="#cb3-25" tabindex="-1"></a>      <span class="fu">round</span>(actual_missing_percentage, <span class="dv">1</span>), <span class="st">&quot;% missing values</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-26"><a href="#cb3-26" tabindex="-1"></a>  </span>
+<span id="cb3-27"><a href="#cb3-27" tabindex="-1"></a>  <span class="co"># Step 2: Assess Non-Euclidean Character</span></span>
+<span id="cb3-28"><a href="#cb3-28" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">2. Assessing non-Euclidean character...</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-29"><a href="#cb3-29" tabindex="-1"></a>  </span>
+<span id="cb3-30"><a href="#cb3-30" tabindex="-1"></a>  D_squared <span class="ot">&lt;-</span> complete_distances_for_evaluation<span class="sc">^</span><span class="dv">2</span></span>
+<span id="cb3-31"><a href="#cb3-31" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">nrow</span>(D_squared)</span>
+<span id="cb3-32"><a href="#cb3-32" tabindex="-1"></a>  J <span class="ot">&lt;-</span> <span class="fu">diag</span>(n) <span class="sc">-</span> (<span class="dv">1</span><span class="sc">/</span>n) <span class="sc">*</span> <span class="fu">matrix</span>(<span class="dv">1</span>, n, n)</span>
+<span id="cb3-33"><a href="#cb3-33" tabindex="-1"></a>  B <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.5</span> <span class="sc">*</span> J <span class="sc">%*%</span> D_squared <span class="sc">%*%</span> J</span>
+<span id="cb3-34"><a href="#cb3-34" tabindex="-1"></a>  eigenvals <span class="ot">&lt;-</span> <span class="fu">eigen</span>(B, <span class="at">symmetric =</span> <span class="cn">TRUE</span>)<span class="sc">$</span>values</span>
+<span id="cb3-35"><a href="#cb3-35" tabindex="-1"></a>  </span>
+<span id="cb3-36"><a href="#cb3-36" tabindex="-1"></a>  numerical_tolerance <span class="ot">&lt;-</span> <span class="fl">1e-12</span></span>
+<span id="cb3-37"><a href="#cb3-37" tabindex="-1"></a>  positive_eigenvals <span class="ot">&lt;-</span> eigenvals[eigenvals <span class="sc">&gt;</span> numerical_tolerance]</span>
+<span id="cb3-38"><a href="#cb3-38" tabindex="-1"></a>  negative_eigenvals <span class="ot">&lt;-</span> eigenvals[eigenvals <span class="sc">&lt;</span> <span class="sc">-</span>numerical_tolerance]</span>
+<span id="cb3-39"><a href="#cb3-39" tabindex="-1"></a>  </span>
+<span id="cb3-40"><a href="#cb3-40" tabindex="-1"></a>  total_variance <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">abs</span>(eigenvals))</span>
+<span id="cb3-41"><a href="#cb3-41" tabindex="-1"></a>  negative_variance <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">abs</span>(negative_eigenvals))</span>
+<span id="cb3-42"><a href="#cb3-42" tabindex="-1"></a>  positive_variance <span class="ot">&lt;-</span> <span class="fu">sum</span>(positive_eigenvals)</span>
+<span id="cb3-43"><a href="#cb3-43" tabindex="-1"></a>  </span>
+<span id="cb3-44"><a href="#cb3-44" tabindex="-1"></a>  <span class="cf">if</span>(positive_variance <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb3-45"><a href="#cb3-45" tabindex="-1"></a>    deviation_score <span class="ot">&lt;-</span> negative_variance <span class="sc">/</span> positive_variance</span>
+<span id="cb3-46"><a href="#cb3-46" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb3-47"><a href="#cb3-47" tabindex="-1"></a>    deviation_score <span class="ot">&lt;-</span> <span class="fl">1.0</span></span>
+<span id="cb3-48"><a href="#cb3-48" tabindex="-1"></a>  }</span>
+<span id="cb3-49"><a href="#cb3-49" tabindex="-1"></a>  </span>
+<span id="cb3-50"><a href="#cb3-50" tabindex="-1"></a>  negative_variance_fraction <span class="ot">&lt;-</span> negative_variance <span class="sc">/</span> total_variance</span>
+<span id="cb3-51"><a href="#cb3-51" tabindex="-1"></a>  </span>
+<span id="cb3-52"><a href="#cb3-52" tabindex="-1"></a>  cumulative_positive_variance <span class="ot">&lt;-</span> <span class="fu">cumsum</span>(positive_eigenvals) <span class="sc">/</span> positive_variance</span>
+<span id="cb3-53"><a href="#cb3-53" tabindex="-1"></a>  dims_for_90_percent <span class="ot">&lt;-</span> <span class="fu">which</span>(cumulative_positive_variance <span class="sc">&gt;=</span> <span class="fl">0.90</span>)[<span class="dv">1</span>]</span>
+<span id="cb3-54"><a href="#cb3-54" tabindex="-1"></a>  <span class="cf">if</span>(<span class="fu">is.na</span>(dims_for_90_percent)) dims_for_90_percent <span class="ot">&lt;-</span> <span class="fu">length</span>(positive_eigenvals)</span>
+<span id="cb3-55"><a href="#cb3-55" tabindex="-1"></a>  </span>
+<span id="cb3-56"><a href="#cb3-56" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Non-Euclidean deviation score:&quot;</span>, <span class="fu">round</span>(deviation_score, <span class="dv">4</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-57"><a href="#cb3-57" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Dimensions for 90% variance:&quot;</span>, dims_for_90_percent, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-58"><a href="#cb3-58" tabindex="-1"></a>  </span>
+<span id="cb3-59"><a href="#cb3-59" tabindex="-1"></a>  <span class="co"># Step 3: Parameter Optimization using Euclidify</span></span>
+<span id="cb3-60"><a href="#cb3-60" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">3. Running automated parameter optimization...</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-61"><a href="#cb3-61" tabindex="-1"></a>  </span>
+<span id="cb3-62"><a href="#cb3-62" tabindex="-1"></a>  <span class="co"># Create temporary directory for optimization</span></span>
+<span id="cb3-63"><a href="#cb3-63" tabindex="-1"></a>  temp_dir <span class="ot">&lt;-</span> <span class="fu">tempfile</span>()</span>
+<span id="cb3-64"><a href="#cb3-64" tabindex="-1"></a>  <span class="fu">dir.create</span>(temp_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-65"><a href="#cb3-65" tabindex="-1"></a>  </span>
+<span id="cb3-66"><a href="#cb3-66" tabindex="-1"></a>  euclidify_results <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
+<span id="cb3-67"><a href="#cb3-67" tabindex="-1"></a>    <span class="fu">Euclidify</span>(</span>
+<span id="cb3-68"><a href="#cb3-68" tabindex="-1"></a>      <span class="at">dissimilarity_matrix =</span> incomplete_distances_for_embedding,</span>
+<span id="cb3-69"><a href="#cb3-69" tabindex="-1"></a>      <span class="at">output_dir =</span> temp_dir,</span>
+<span id="cb3-70"><a href="#cb3-70" tabindex="-1"></a>      <span class="at">ndim_range =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="fu">min</span>(<span class="dv">10</span>, dims_for_90_percent <span class="sc">+</span> <span class="dv">3</span>)),</span>
+<span id="cb3-71"><a href="#cb3-71" tabindex="-1"></a>      <span class="at">n_initial_samples =</span> <span class="dv">20</span>,  <span class="co"># Reduced for vignette speed</span></span>
+<span id="cb3-72"><a href="#cb3-72" tabindex="-1"></a>      <span class="at">n_adaptive_samples =</span> <span class="dv">40</span>,  <span class="co"># Reduced for vignette speed</span></span>
+<span id="cb3-73"><a href="#cb3-73" tabindex="-1"></a>      <span class="at">folds =</span> <span class="dv">20</span>,  </span>
+<span id="cb3-74"><a href="#cb3-74" tabindex="-1"></a>      <span class="at">mapping_max_iter =</span> <span class="dv">300</span>,  <span class="co"># Reduced for speed</span></span>
+<span id="cb3-75"><a href="#cb3-75" tabindex="-1"></a>      <span class="at">clean_intermediate =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-76"><a href="#cb3-76" tabindex="-1"></a>      <span class="at">verbose =</span> <span class="st">&quot;off&quot;</span>,</span>
+<span id="cb3-77"><a href="#cb3-77" tabindex="-1"></a>      <span class="at">fallback_to_defaults =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb3-78"><a href="#cb3-78" tabindex="-1"></a>      <span class="at">save_results =</span> <span class="cn">FALSE</span></span>
+<span id="cb3-79"><a href="#cb3-79" tabindex="-1"></a>    )</span>
+<span id="cb3-80"><a href="#cb3-80" tabindex="-1"></a>  }, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb3-81"><a href="#cb3-81" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;Euclidify failed, using default parameters</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-82"><a href="#cb3-82" tabindex="-1"></a>    <span class="cn">NULL</span></span>
+<span id="cb3-83"><a href="#cb3-83" tabindex="-1"></a>  })</span>
+<span id="cb3-84"><a href="#cb3-84" tabindex="-1"></a>  </span>
+<span id="cb3-85"><a href="#cb3-85" tabindex="-1"></a>  <span class="co"># Clean up temp directory</span></span>
+<span id="cb3-86"><a href="#cb3-86" tabindex="-1"></a>  <span class="fu">unlink</span>(temp_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-87"><a href="#cb3-87" tabindex="-1"></a>  </span>
+<span id="cb3-88"><a href="#cb3-88" tabindex="-1"></a>  <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(euclidify_results)) {</span>
+<span id="cb3-89"><a href="#cb3-89" tabindex="-1"></a>    optimal_params <span class="ot">&lt;-</span> euclidify_results<span class="sc">$</span>optimal_params</span>
+<span id="cb3-90"><a href="#cb3-90" tabindex="-1"></a>    euclidify_positions <span class="ot">&lt;-</span> euclidify_results<span class="sc">$</span>positions</span>
+<span id="cb3-91"><a href="#cb3-91" tabindex="-1"></a>    target_dims <span class="ot">&lt;-</span> optimal_params<span class="sc">$</span>ndim</span>
+<span id="cb3-92"><a href="#cb3-92" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;Optimal parameters found - dimensions:&quot;</span>, target_dims, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-93"><a href="#cb3-93" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb3-94"><a href="#cb3-94" tabindex="-1"></a>    <span class="co"># Fallback parameters</span></span>
+<span id="cb3-95"><a href="#cb3-95" tabindex="-1"></a>    target_dims <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="dv">2</span>, <span class="fu">min</span>(<span class="dv">5</span>, dims_for_90_percent))</span>
+<span id="cb3-96"><a href="#cb3-96" tabindex="-1"></a>    optimal_params <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb3-97"><a href="#cb3-97" tabindex="-1"></a>      <span class="at">ndim =</span> target_dims,</span>
+<span id="cb3-98"><a href="#cb3-98" tabindex="-1"></a>      <span class="at">k0 =</span> <span class="fl">5.0</span>,</span>
+<span id="cb3-99"><a href="#cb3-99" tabindex="-1"></a>      <span class="at">cooling_rate =</span> <span class="fl">0.01</span>,</span>
+<span id="cb3-100"><a href="#cb3-100" tabindex="-1"></a>      <span class="at">c_repulsion =</span> <span class="fl">0.02</span></span>
+<span id="cb3-101"><a href="#cb3-101" tabindex="-1"></a>    )</span>
+<span id="cb3-102"><a href="#cb3-102" tabindex="-1"></a>    euclidify_positions <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb3-103"><a href="#cb3-103" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;Using fallback parameters - dimensions:&quot;</span>, target_dims, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-104"><a href="#cb3-104" tabindex="-1"></a>  }</span>
+<span id="cb3-105"><a href="#cb3-105" tabindex="-1"></a>  </span>
+<span id="cb3-106"><a href="#cb3-106" tabindex="-1"></a>  <span class="co"># Step 4: Three-Method Comparison</span></span>
+<span id="cb3-107"><a href="#cb3-107" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">4. Running three-method comparison...</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-108"><a href="#cb3-108" tabindex="-1"></a>  </span>
+<span id="cb3-109"><a href="#cb3-109" tabindex="-1"></a>  <span class="co"># Initialize storage</span></span>
+<span id="cb3-110"><a href="#cb3-110" tabindex="-1"></a>  topolow_results <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">&quot;list&quot;</span>, n_runs)</span>
+<span id="cb3-111"><a href="#cb3-111" tabindex="-1"></a>  iterative_mds_results <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">&quot;list&quot;</span>, n_runs)</span>
+<span id="cb3-112"><a href="#cb3-112" tabindex="-1"></a>  classical_mds_result <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb3-113"><a href="#cb3-113" tabindex="-1"></a>  </span>
+<span id="cb3-114"><a href="#cb3-114" tabindex="-1"></a>  topolow_errors <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_runs)</span>
+<span id="cb3-115"><a href="#cb3-115" tabindex="-1"></a>  iterative_mds_errors <span class="ot">&lt;-</span> <span class="fu">numeric</span>(n_runs)</span>
+<span id="cb3-116"><a href="#cb3-116" tabindex="-1"></a>  classical_mds_error <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb3-117"><a href="#cb3-117" tabindex="-1"></a>  </span>
+<span id="cb3-118"><a href="#cb3-118" tabindex="-1"></a>  <span class="co"># Topolow runs</span></span>
+<span id="cb3-119"><a href="#cb3-119" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Running Topolow embeddings...</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-120"><a href="#cb3-120" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_runs) {</span>
+<span id="cb3-121"><a href="#cb3-121" tabindex="-1"></a>    <span class="cf">if</span>(i <span class="sc">==</span> <span class="dv">1</span> <span class="sc">&amp;&amp;</span> <span class="sc">!</span><span class="fu">is.null</span>(euclidify_positions)) {</span>
+<span id="cb3-122"><a href="#cb3-122" tabindex="-1"></a>      <span class="co"># Use Euclidify result for first run</span></span>
+<span id="cb3-123"><a href="#cb3-123" tabindex="-1"></a>      topolow_coords <span class="ot">&lt;-</span> euclidify_positions</span>
+<span id="cb3-124"><a href="#cb3-124" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb3-125"><a href="#cb3-125" tabindex="-1"></a>      <span class="co"># Run new embedding</span></span>
+<span id="cb3-126"><a href="#cb3-126" tabindex="-1"></a>      topolow_result <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>({</span>
+<span id="cb3-127"><a href="#cb3-127" tabindex="-1"></a>        <span class="fu">euclidean_embedding</span>(</span>
+<span id="cb3-128"><a href="#cb3-128" tabindex="-1"></a>          <span class="at">dissimilarity_matrix =</span> incomplete_distances_for_embedding,</span>
+<span id="cb3-129"><a href="#cb3-129" tabindex="-1"></a>          <span class="at">ndim =</span> optimal_params<span class="sc">$</span>ndim,</span>
+<span id="cb3-130"><a href="#cb3-130" tabindex="-1"></a>          <span class="at">mapping_max_iter =</span> <span class="dv">300</span>,</span>
+<span id="cb3-131"><a href="#cb3-131" tabindex="-1"></a>          <span class="at">k0 =</span> optimal_params<span class="sc">$</span>k0,</span>
+<span id="cb3-132"><a href="#cb3-132" tabindex="-1"></a>          <span class="at">cooling_rate =</span> optimal_params<span class="sc">$</span>cooling_rate,</span>
+<span id="cb3-133"><a href="#cb3-133" tabindex="-1"></a>          <span class="at">c_repulsion =</span> optimal_params<span class="sc">$</span>c_repulsion,</span>
+<span id="cb3-134"><a href="#cb3-134" tabindex="-1"></a>          <span class="at">relative_epsilon =</span> <span class="fl">1e-6</span>,</span>
+<span id="cb3-135"><a href="#cb3-135" tabindex="-1"></a>          <span class="at">convergence_counter =</span> <span class="dv">3</span>,</span>
+<span id="cb3-136"><a href="#cb3-136" tabindex="-1"></a>          <span class="at">verbose =</span> <span class="cn">FALSE</span></span>
+<span id="cb3-137"><a href="#cb3-137" tabindex="-1"></a>        )</span>
+<span id="cb3-138"><a href="#cb3-138" tabindex="-1"></a>      }, <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NULL</span>)</span>
+<span id="cb3-139"><a href="#cb3-139" tabindex="-1"></a>      </span>
+<span id="cb3-140"><a href="#cb3-140" tabindex="-1"></a>      <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(topolow_result)) {</span>
+<span id="cb3-141"><a href="#cb3-141" tabindex="-1"></a>        topolow_coords <span class="ot">&lt;-</span> topolow_result<span class="sc">$</span>positions</span>
+<span id="cb3-142"><a href="#cb3-142" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
+<span id="cb3-143"><a href="#cb3-143" tabindex="-1"></a>        topolow_coords <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb3-144"><a href="#cb3-144" tabindex="-1"></a>      }</span>
+<span id="cb3-145"><a href="#cb3-145" tabindex="-1"></a>    }</span>
+<span id="cb3-146"><a href="#cb3-146" tabindex="-1"></a>    </span>
+<span id="cb3-147"><a href="#cb3-147" tabindex="-1"></a>    <span class="cf">if</span>(<span class="sc">!</span><span class="fu">is.null</span>(topolow_coords)) {</span>
+<span id="cb3-148"><a href="#cb3-148" tabindex="-1"></a>      topolow_coords <span class="ot">&lt;-</span> topolow_coords[<span class="fu">order</span>(<span class="fu">row.names</span>(topolow_coords)), ]</span>
+<span id="cb3-149"><a href="#cb3-149" tabindex="-1"></a>      </span>
+<span id="cb3-150"><a href="#cb3-150" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">validate_coordinates</span>(topolow_coords, <span class="st">&quot;Topolow&quot;</span>, n_objects, target_dims)) {</span>
+<span id="cb3-151"><a href="#cb3-151" tabindex="-1"></a>        topolow_coords <span class="ot">&lt;-</span> <span class="fu">scale</span>(topolow_coords, <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-152"><a href="#cb3-152" tabindex="-1"></a>        topolow_results[[i]] <span class="ot">&lt;-</span> topolow_coords</span>
+<span id="cb3-153"><a href="#cb3-153" tabindex="-1"></a>        </span>
+<span id="cb3-154"><a href="#cb3-154" tabindex="-1"></a>        embedded_distances <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(topolow_coords))</span>
+<span id="cb3-155"><a href="#cb3-155" tabindex="-1"></a>        <span class="fu">rownames</span>(embedded_distances) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(topolow_coords)</span>
+<span id="cb3-156"><a href="#cb3-156" tabindex="-1"></a>        <span class="fu">colnames</span>(embedded_distances) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(topolow_coords)</span>
+<span id="cb3-157"><a href="#cb3-157" tabindex="-1"></a>        </span>
+<span id="cb3-158"><a href="#cb3-158" tabindex="-1"></a>        valid_mask <span class="ot">&lt;-</span> <span class="sc">!</span><span class="fu">is.na</span>(complete_distances_for_evaluation)</span>
+<span id="cb3-159"><a href="#cb3-159" tabindex="-1"></a>        distance_errors <span class="ot">&lt;-</span> <span class="fu">abs</span>(complete_distances_for_evaluation[valid_mask] <span class="sc">-</span> </span>
+<span id="cb3-160"><a href="#cb3-160" tabindex="-1"></a>                             embedded_distances[valid_mask])</span>
+<span id="cb3-161"><a href="#cb3-161" tabindex="-1"></a>        topolow_errors[i] <span class="ot">&lt;-</span> <span class="fu">sum</span>(distance_errors)</span>
+<span id="cb3-162"><a href="#cb3-162" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
+<span id="cb3-163"><a href="#cb3-163" tabindex="-1"></a>        topolow_results[[i]] <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb3-164"><a href="#cb3-164" tabindex="-1"></a>        topolow_errors[i] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb3-165"><a href="#cb3-165" tabindex="-1"></a>      }</span>
+<span id="cb3-166"><a href="#cb3-166" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb3-167"><a href="#cb3-167" tabindex="-1"></a>      topolow_results[[i]] <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb3-168"><a href="#cb3-168" tabindex="-1"></a>      topolow_errors[i] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb3-169"><a href="#cb3-169" tabindex="-1"></a>    }</span>
+<span id="cb3-170"><a href="#cb3-170" tabindex="-1"></a>  }</span>
+<span id="cb3-171"><a href="#cb3-171" tabindex="-1"></a>  </span>
+<span id="cb3-172"><a href="#cb3-172" tabindex="-1"></a>  <span class="co"># Classical MDS</span></span>
+<span id="cb3-173"><a href="#cb3-173" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Running Classical MDS...</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-174"><a href="#cb3-174" tabindex="-1"></a>  imputation_result <span class="ot">&lt;-</span> <span class="fu">improved_missing_data_imputation</span>(incomplete_distances_for_embedding)</span>
+<span id="cb3-175"><a href="#cb3-175" tabindex="-1"></a>  classical_mds_matrix <span class="ot">&lt;-</span> imputation_result<span class="sc">$</span>matrix</span>
+<span id="cb3-176"><a href="#cb3-176" tabindex="-1"></a>  </span>
+<span id="cb3-177"><a href="#cb3-177" tabindex="-1"></a>  <span class="fu">tryCatch</span>({</span>
+<span id="cb3-178"><a href="#cb3-178" tabindex="-1"></a>    classical_mds_result_raw <span class="ot">&lt;-</span> <span class="fu">cmdscale</span>(classical_mds_matrix, <span class="at">k =</span> target_dims, <span class="at">eig =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-179"><a href="#cb3-179" tabindex="-1"></a>    classical_mds_coords <span class="ot">&lt;-</span> classical_mds_result_raw<span class="sc">$</span>points</span>
+<span id="cb3-180"><a href="#cb3-180" tabindex="-1"></a>    <span class="fu">rownames</span>(classical_mds_coords) <span class="ot">&lt;-</span> object_names</span>
+<span id="cb3-181"><a href="#cb3-181" tabindex="-1"></a>    classical_mds_coords <span class="ot">&lt;-</span> classical_mds_coords[<span class="fu">order</span>(<span class="fu">row.names</span>(classical_mds_coords)), ]</span>
+<span id="cb3-182"><a href="#cb3-182" tabindex="-1"></a>    </span>
+<span id="cb3-183"><a href="#cb3-183" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">validate_coordinates</span>(classical_mds_coords, <span class="st">&quot;Classical MDS&quot;</span>, n_objects, target_dims)) {</span>
+<span id="cb3-184"><a href="#cb3-184" tabindex="-1"></a>      classical_mds_coords <span class="ot">&lt;-</span> <span class="fu">scale</span>(classical_mds_coords, <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-185"><a href="#cb3-185" tabindex="-1"></a>      classical_mds_result <span class="ot">&lt;-</span> classical_mds_coords</span>
+<span id="cb3-186"><a href="#cb3-186" tabindex="-1"></a>      </span>
+<span id="cb3-187"><a href="#cb3-187" tabindex="-1"></a>      embedded_distances <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(classical_mds_coords))</span>
+<span id="cb3-188"><a href="#cb3-188" tabindex="-1"></a>      <span class="fu">rownames</span>(embedded_distances) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(classical_mds_coords)</span>
+<span id="cb3-189"><a href="#cb3-189" tabindex="-1"></a>      <span class="fu">colnames</span>(embedded_distances) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(classical_mds_coords)</span>
+<span id="cb3-190"><a href="#cb3-190" tabindex="-1"></a>      </span>
+<span id="cb3-191"><a href="#cb3-191" tabindex="-1"></a>      valid_mask <span class="ot">&lt;-</span> <span class="sc">!</span><span class="fu">is.na</span>(complete_distances_for_evaluation)</span>
+<span id="cb3-192"><a href="#cb3-192" tabindex="-1"></a>      distance_errors <span class="ot">&lt;-</span> <span class="fu">abs</span>(complete_distances_for_evaluation[valid_mask] <span class="sc">-</span> </span>
+<span id="cb3-193"><a href="#cb3-193" tabindex="-1"></a>                           embedded_distances[valid_mask])</span>
+<span id="cb3-194"><a href="#cb3-194" tabindex="-1"></a>      classical_mds_error <span class="ot">&lt;-</span> <span class="fu">sum</span>(distance_errors)</span>
+<span id="cb3-195"><a href="#cb3-195" tabindex="-1"></a>    }</span>
+<span id="cb3-196"><a href="#cb3-196" tabindex="-1"></a>  }, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb3-197"><a href="#cb3-197" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;Classical MDS failed:&quot;</span>, e<span class="sc">$</span>message, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-198"><a href="#cb3-198" tabindex="-1"></a>  })</span>
+<span id="cb3-199"><a href="#cb3-199" tabindex="-1"></a>  </span>
+<span id="cb3-200"><a href="#cb3-200" tabindex="-1"></a>  <span class="co"># Iterative MDS</span></span>
+<span id="cb3-201"><a href="#cb3-201" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Running Iterative MDS...</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb3-202"><a href="#cb3-202" tabindex="-1"></a>  <span class="cf">for</span>(i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>n_runs) {</span>
+<span id="cb3-203"><a href="#cb3-203" tabindex="-1"></a>    <span class="fu">tryCatch</span>({</span>
+<span id="cb3-204"><a href="#cb3-204" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">requireNamespace</span>(<span class="st">&quot;smacof&quot;</span>, <span class="at">quietly =</span> <span class="cn">TRUE</span>)) {</span>
+<span id="cb3-205"><a href="#cb3-205" tabindex="-1"></a>        max_dist <span class="ot">&lt;-</span> <span class="fu">max</span>(classical_mds_matrix, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-206"><a href="#cb3-206" tabindex="-1"></a>        scaled_matrix <span class="ot">&lt;-</span> classical_mds_matrix <span class="sc">/</span> max_dist</span>
+<span id="cb3-207"><a href="#cb3-207" tabindex="-1"></a>        </span>
+<span id="cb3-208"><a href="#cb3-208" tabindex="-1"></a>        iterative_mds_result_raw <span class="ot">&lt;-</span> smacof<span class="sc">::</span><span class="fu">smacofSym</span>(</span>
+<span id="cb3-209"><a href="#cb3-209" tabindex="-1"></a>          <span class="at">delta =</span> scaled_matrix, </span>
+<span id="cb3-210"><a href="#cb3-210" tabindex="-1"></a>          <span class="at">ndim =</span> target_dims,</span>
+<span id="cb3-211"><a href="#cb3-211" tabindex="-1"></a>          <span class="at">type =</span> <span class="st">&quot;interval&quot;</span>,</span>
+<span id="cb3-212"><a href="#cb3-212" tabindex="-1"></a>          <span class="at">init =</span> <span class="st">&quot;torgerson&quot;</span>,</span>
+<span id="cb3-213"><a href="#cb3-213" tabindex="-1"></a>          <span class="at">verbose =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb3-214"><a href="#cb3-214" tabindex="-1"></a>          <span class="at">itmax =</span> <span class="dv">1000</span>,</span>
+<span id="cb3-215"><a href="#cb3-215" tabindex="-1"></a>          <span class="at">eps =</span> <span class="fl">1e-5</span></span>
+<span id="cb3-216"><a href="#cb3-216" tabindex="-1"></a>        )</span>
+<span id="cb3-217"><a href="#cb3-217" tabindex="-1"></a>        </span>
+<span id="cb3-218"><a href="#cb3-218" tabindex="-1"></a>        iterative_mds_coords <span class="ot">&lt;-</span> iterative_mds_result_raw<span class="sc">$</span>conf</span>
+<span id="cb3-219"><a href="#cb3-219" tabindex="-1"></a>        current_max_dist <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="fu">dist</span>(iterative_mds_coords))</span>
+<span id="cb3-220"><a href="#cb3-220" tabindex="-1"></a>        <span class="cf">if</span>(current_max_dist <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb3-221"><a href="#cb3-221" tabindex="-1"></a>          scale_factor <span class="ot">&lt;-</span> max_dist <span class="sc">/</span> current_max_dist</span>
+<span id="cb3-222"><a href="#cb3-222" tabindex="-1"></a>          iterative_mds_coords <span class="ot">&lt;-</span> iterative_mds_coords <span class="sc">*</span> scale_factor</span>
+<span id="cb3-223"><a href="#cb3-223" tabindex="-1"></a>        }</span>
+<span id="cb3-224"><a href="#cb3-224" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
+<span id="cb3-225"><a href="#cb3-225" tabindex="-1"></a>        <span class="co"># Fallback to isoMDS</span></span>
+<span id="cb3-226"><a href="#cb3-226" tabindex="-1"></a>        iterative_mds_result_raw <span class="ot">&lt;-</span> MASS<span class="sc">::</span><span class="fu">isoMDS</span>(classical_mds_matrix, <span class="at">k =</span> target_dims, <span class="at">trace =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-227"><a href="#cb3-227" tabindex="-1"></a>        iterative_mds_coords <span class="ot">&lt;-</span> iterative_mds_result_raw<span class="sc">$</span>points</span>
+<span id="cb3-228"><a href="#cb3-228" tabindex="-1"></a>      }</span>
+<span id="cb3-229"><a href="#cb3-229" tabindex="-1"></a>      </span>
+<span id="cb3-230"><a href="#cb3-230" tabindex="-1"></a>      <span class="fu">rownames</span>(iterative_mds_coords) <span class="ot">&lt;-</span> object_names</span>
+<span id="cb3-231"><a href="#cb3-231" tabindex="-1"></a>      iterative_mds_coords <span class="ot">&lt;-</span> iterative_mds_coords[<span class="fu">order</span>(<span class="fu">row.names</span>(iterative_mds_coords)), ]</span>
+<span id="cb3-232"><a href="#cb3-232" tabindex="-1"></a>      </span>
+<span id="cb3-233"><a href="#cb3-233" tabindex="-1"></a>      <span class="cf">if</span>(<span class="fu">validate_coordinates</span>(iterative_mds_coords, <span class="st">&quot;Iterative MDS&quot;</span>, n_objects, target_dims)) {</span>
+<span id="cb3-234"><a href="#cb3-234" tabindex="-1"></a>        iterative_mds_coords <span class="ot">&lt;-</span> <span class="fu">scale</span>(iterative_mds_coords, <span class="at">center =</span> <span class="cn">TRUE</span>, <span class="at">scale =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-235"><a href="#cb3-235" tabindex="-1"></a>        iterative_mds_results[[i]] <span class="ot">&lt;-</span> iterative_mds_coords</span>
+<span id="cb3-236"><a href="#cb3-236" tabindex="-1"></a>        </span>
+<span id="cb3-237"><a href="#cb3-237" tabindex="-1"></a>        embedded_distances <span class="ot">&lt;-</span> <span class="fu">as.matrix</span>(<span class="fu">dist</span>(iterative_mds_coords))</span>
+<span id="cb3-238"><a href="#cb3-238" tabindex="-1"></a>        <span class="fu">rownames</span>(embedded_distances) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(iterative_mds_coords)</span>
+<span id="cb3-239"><a href="#cb3-239" tabindex="-1"></a>        <span class="fu">colnames</span>(embedded_distances) <span class="ot">&lt;-</span> <span class="fu">rownames</span>(iterative_mds_coords)</span>
+<span id="cb3-240"><a href="#cb3-240" tabindex="-1"></a>        </span>
+<span id="cb3-241"><a href="#cb3-241" tabindex="-1"></a>        valid_mask <span class="ot">&lt;-</span> <span class="sc">!</span><span class="fu">is.na</span>(complete_distances_for_evaluation)</span>
+<span id="cb3-242"><a href="#cb3-242" tabindex="-1"></a>        distance_errors <span class="ot">&lt;-</span> <span class="fu">abs</span>(complete_distances_for_evaluation[valid_mask] <span class="sc">-</span> </span>
+<span id="cb3-243"><a href="#cb3-243" tabindex="-1"></a>                             embedded_distances[valid_mask])</span>
+<span id="cb3-244"><a href="#cb3-244" tabindex="-1"></a>        iterative_mds_errors[i] <span class="ot">&lt;-</span> <span class="fu">sum</span>(distance_errors)</span>
+<span id="cb3-245"><a href="#cb3-245" tabindex="-1"></a>      } <span class="cf">else</span> {</span>
+<span id="cb3-246"><a href="#cb3-246" tabindex="-1"></a>        iterative_mds_results[[i]] <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb3-247"><a href="#cb3-247" tabindex="-1"></a>        iterative_mds_errors[i] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb3-248"><a href="#cb3-248" tabindex="-1"></a>      }</span>
+<span id="cb3-249"><a href="#cb3-249" tabindex="-1"></a>      </span>
+<span id="cb3-250"><a href="#cb3-250" tabindex="-1"></a>    }, <span class="at">error =</span> <span class="cf">function</span>(e) {</span>
+<span id="cb3-251"><a href="#cb3-251" tabindex="-1"></a>      iterative_mds_results[[i]] <span class="ot">&lt;-</span> <span class="cn">NULL</span></span>
+<span id="cb3-252"><a href="#cb3-252" tabindex="-1"></a>      iterative_mds_errors[i] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb3-253"><a href="#cb3-253" tabindex="-1"></a>    })</span>
+<span id="cb3-254"><a href="#cb3-254" tabindex="-1"></a>  }</span>
+<span id="cb3-255"><a href="#cb3-255" tabindex="-1"></a>  </span>
+<span id="cb3-256"><a href="#cb3-256" tabindex="-1"></a>  <span class="co"># Step 5: Compile Results</span></span>
+<span id="cb3-257"><a href="#cb3-257" tabindex="-1"></a>  valid_topolow_results <span class="ot">&lt;-</span> <span class="sc">!</span><span class="fu">is.na</span>(topolow_errors)</span>
+<span id="cb3-258"><a href="#cb3-258" tabindex="-1"></a>  valid_iterative_results <span class="ot">&lt;-</span> <span class="sc">!</span><span class="fu">is.na</span>(iterative_mds_errors)</span>
+<span id="cb3-259"><a href="#cb3-259" tabindex="-1"></a>  </span>
+<span id="cb3-260"><a href="#cb3-260" tabindex="-1"></a>  results <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb3-261"><a href="#cb3-261" tabindex="-1"></a>    <span class="at">dataset_name =</span> dataset_name,</span>
+<span id="cb3-262"><a href="#cb3-262" tabindex="-1"></a>    <span class="at">data_characteristics =</span> <span class="fu">list</span>(</span>
+<span id="cb3-263"><a href="#cb3-263" tabindex="-1"></a>      <span class="at">n_objects =</span> n_objects,</span>
+<span id="cb3-264"><a href="#cb3-264" tabindex="-1"></a>      <span class="at">missing_percentage =</span> actual_missing_percentage,</span>
+<span id="cb3-265"><a href="#cb3-265" tabindex="-1"></a>      <span class="at">deviation_score =</span> deviation_score,</span>
+<span id="cb3-266"><a href="#cb3-266" tabindex="-1"></a>      <span class="at">dims_90_percent =</span> dims_for_90_percent,</span>
+<span id="cb3-267"><a href="#cb3-267" tabindex="-1"></a>      <span class="at">negative_variance_fraction =</span> negative_variance_fraction</span>
+<span id="cb3-268"><a href="#cb3-268" tabindex="-1"></a>    ),</span>
+<span id="cb3-269"><a href="#cb3-269" tabindex="-1"></a>    <span class="at">optimal_params =</span> optimal_params,</span>
+<span id="cb3-270"><a href="#cb3-270" tabindex="-1"></a>    <span class="at">topolow_errors =</span> topolow_errors,</span>
+<span id="cb3-271"><a href="#cb3-271" tabindex="-1"></a>    <span class="at">topolow_results =</span> topolow_results,</span>
+<span id="cb3-272"><a href="#cb3-272" tabindex="-1"></a>    <span class="at">valid_topolow_results =</span> valid_topolow_results,</span>
+<span id="cb3-273"><a href="#cb3-273" tabindex="-1"></a>    <span class="at">classical_mds_error =</span> classical_mds_error,</span>
+<span id="cb3-274"><a href="#cb3-274" tabindex="-1"></a>    <span class="at">classical_mds_result =</span> classical_mds_result,</span>
+<span id="cb3-275"><a href="#cb3-275" tabindex="-1"></a>    <span class="at">iterative_mds_errors =</span> iterative_mds_errors,</span>
+<span id="cb3-276"><a href="#cb3-276" tabindex="-1"></a>    <span class="at">iterative_mds_results =</span> iterative_mds_results,</span>
+<span id="cb3-277"><a href="#cb3-277" tabindex="-1"></a>    <span class="at">valid_iterative_results =</span> valid_iterative_results,</span>
+<span id="cb3-278"><a href="#cb3-278" tabindex="-1"></a>    <span class="at">complete_distances =</span> complete_distances_for_evaluation,</span>
+<span id="cb3-279"><a href="#cb3-279" tabindex="-1"></a>    <span class="at">incomplete_distances =</span> incomplete_distances_for_embedding,</span>
+<span id="cb3-280"><a href="#cb3-280" tabindex="-1"></a>    <span class="at">target_dims =</span> target_dims</span>
+<span id="cb3-281"><a href="#cb3-281" tabindex="-1"></a>  )</span>
+<span id="cb3-282"><a href="#cb3-282" tabindex="-1"></a>  </span>
+<span id="cb3-283"><a href="#cb3-283" tabindex="-1"></a>  <span class="fu">return</span>(results)</span>
+<span id="cb3-284"><a href="#cb3-284" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="results-synthesized-non-euclidean-data" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Results: Synthesized
+non-Euclidean Data</h1>
+<p>We begin our analysis with the Synthesized non-Euclidean dataset,
+which represents a controlled deviation from metric properties through
+systematic transformations.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Run analysis for Synthesized non-Euclidean data</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>distorted_results <span class="ot">&lt;-</span> <span class="fu">run_comprehensive_analysis</span>(</span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  generate_distorted_euclidean_data, </span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="st">&quot;Synthesized non-Euclidean&quot;</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>  <span class="at">n_objects =</span> <span class="dv">50</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>  <span class="at">n_runs =</span> <span class="dv">50</span></span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>#&gt; === Synthesized non-Euclidean DATA ANALYSIS SUMMARY ===
+#&gt; Dataset characteristics:
+#&gt; - Objects: 50
+#&gt; - Missing data: 30 %
+#&gt; - Non-Euclidean deviation score: 0.6034
+#&gt; - Dimensions for 90% variance: 13
+#&gt; - Target embedding dimensions: 3
+#&gt; Performance Summary:
+#&gt; - Topolow mean error: 115995.6 ± 414.62
+#&gt; - Classical MDS error: 154109.3
+#&gt; - Iterative MDS mean error: 263692 ± 0</code></pre>
+<div id="eigenvalue-spectrum-analysis---synthesized-non-euclidean" class="section level2" number="5.1">
+<h2><span class="header-section-number">5.1</span> Eigenvalue Spectrum
+Analysis - Synthesized non-Euclidean</h2>
+<div class="float">
+<img role="img" aria-label="plot of chunk distorted_eigenvalues" src="figure/distorted_eigenvalues-1.png" alt="plot of chunk distorted_eigenvalues" />
+<div class="figcaption">plot of chunk distorted_eigenvalues</div>
+</div>
+</div>
+<div id="performance-comparison---synthesized-non-euclidean" class="section level2" number="5.2">
+<h2><span class="header-section-number">5.2</span> Performance
+Comparison - Synthesized non-Euclidean</h2>
+<div class="float">
+<img role="img" aria-label="plot of chunk distorted_performance" src="figure/distorted_performance-1.png" alt="plot of chunk distorted_performance" />
+<div class="figcaption">plot of chunk distorted_performance</div>
+</div>
+</div>
+</div>
+<div id="results-swiss-roll-manifold-data" class="section level1" number="6">
+<h1><span class="header-section-number">6</span> Results: Swiss Roll
+Manifold Data</h1>
+<p>Next, we analyze the Swiss Roll manifold dataset, which represents
+geodesic distances that are inherently non-Euclidean in the embedding
+space.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Run analysis for Swiss Roll data</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>swiss_results <span class="ot">&lt;-</span> <span class="fu">run_comprehensive_analysis</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  generate_swiss_roll_data, </span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="st">&quot;Swiss Roll Manifold&quot;</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">n_objects =</span> <span class="dv">50</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="at">n_runs =</span> <span class="dv">50</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>#&gt; === SWISS ROLL MANIFOLD DATA ANALYSIS SUMMARY ===
+#&gt; Dataset characteristics:
+#&gt; - Objects: 50
+#&gt; - Missing data: 30 %
+#&gt; - Non-Euclidean deviation score: 0.2945
+#&gt; - Dimensions for 90% variance: 9
+#&gt; - Target embedding dimensions: 4
+#&gt; Performance Summary:
+#&gt; - Topolow mean error: 2871.67 ± 76.94
+#&gt; - Classical MDS error: 5727.19
+#&gt; - Iterative MDS mean error: 9628.46 ± 0</code></pre>
+<div id="eigenvalue-spectrum-analysis---swiss-roll" class="section level2" number="6.1">
+<h2><span class="header-section-number">6.1</span> Eigenvalue Spectrum
+Analysis - Swiss Roll</h2>
+<div class="float">
+<img role="img" aria-label="plot of chunk swiss_eigenvalues" src="figure/swiss_eigenvalues-1.png" alt="plot of chunk swiss_eigenvalues" />
+<div class="figcaption">plot of chunk swiss_eigenvalues</div>
+</div>
+</div>
+<div id="performance-comparison---swiss-roll" class="section level2" number="6.2">
+<h2><span class="header-section-number">6.2</span> Performance
+Comparison - Swiss Roll</h2>
+<div class="float">
+<img role="img" aria-label="plot of chunk swiss_performance" src="figure/swiss_performance-1.png" alt="plot of chunk swiss_performance" />
+<div class="figcaption">plot of chunk swiss_performance</div>
+</div>
+</div>
+</div>
+<div id="comparative-analysis-across-dataset-types" class="section level1" number="7">
+<h1><span class="header-section-number">7</span> Comparative Analysis
+Across Dataset Types</h1>
+<div id="combined-performance-analysis" class="section level2" number="7.1">
+<h2><span class="header-section-number">7.1</span> Combined Performance
+Analysis</h2>
+<div class="float">
+<img role="img" aria-label="plot of chunk combined_analysis" src="figure/combined_analysis-1.png" alt="plot of chunk combined_analysis" />
+<div class="figcaption">plot of chunk combined_analysis</div>
+</div>
+<pre><code>#&gt; 
+#&gt; === COMBINED PERFORMANCE SUMMARY ===
+#&gt; # A tibble: 6 × 8
+#&gt;   Method        Dataset                   Method_Type   Count Mean_Error SD_Error Min_Error Max_Error
+#&gt;   &lt;chr&gt;         &lt;chr&gt;                     &lt;chr&gt;         &lt;int&gt;      &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;
+#&gt; 1 Classical MDS Swiss Roll                Deterministic     1      5727.     NA       5727.     5727.
+#&gt; 2 Classical MDS Synthesized non-Euclidean Deterministic     1    154109.     NA     154109.   154109.
+#&gt; 3 Iterative MDS Swiss Roll                Stochastic       50      9628.      0       9628.     9628.
+#&gt; 4 Iterative MDS Synthesized non-Euclidean Stochastic       50    263692.      0     263692.   263692.
+#&gt; 5 Topolow       Swiss Roll                Stochastic       50      2872.     76.9     2822.     3369.
+#&gt; 6 Topolow       Synthesized non-Euclidean Stochastic       50    115996.    415.    115258.   116960.</code></pre>
+</div>
+<div id="statistical-comparisons" class="section level2" number="7.2">
+<h2><span class="header-section-number">7.2</span> Statistical
+Comparisons</h2>
+<pre><code>#&gt; 
+#&gt; === STATISTICAL ANALYSIS ===
+#&gt; 
+#&gt; Synthesized non-Euclidean Data:
+#&gt; 
+#&gt; --- Statistical Comparison (Topolow vs Iterative MDS ) ---
+#&gt; - Welch&#39;s t-statistic: -2518.874 
+#&gt; - p-value: 6.39e-127 
+#&gt; - Cohen&#39;s d (effect size): -503.775 
+#&gt; - Effect size interpretation: Large
+#&gt; $t_test
+#&gt; 
+#&gt;  Welch Two Sample t-test
+#&gt; 
+#&gt; data:  valid_topolow and valid_other
+#&gt; t = -2518.9, df = 49, p-value &lt; 2.2e-16
+#&gt; alternative hypothesis: true difference in means is not equal to 0
+#&gt; 95 percent confidence interval:
+#&gt;  -147814.3 -147578.6
+#&gt; sample estimates:
+#&gt; mean of x mean of y 
+#&gt;  115995.6  263692.0 
+#&gt; 
+#&gt; 
+#&gt; $cohens_d
+#&gt; [1] -503.7748
+#&gt; 
+#&gt; Swiss Roll Manifold Data:
+#&gt; 
+#&gt; --- Statistical Comparison (Topolow vs Iterative MDS ) ---
+#&gt; - Welch&#39;s t-statistic: -620.991 
+#&gt; - p-value: 4e-97 
+#&gt; - Cohen&#39;s d (effect size): -124.198 
+#&gt; - Effect size interpretation: Large
+#&gt; $t_test
+#&gt; 
+#&gt;  Welch Two Sample t-test
+#&gt; 
+#&gt; data:  valid_topolow and valid_other
+#&gt; t = -620.99, df = 49, p-value &lt; 2.2e-16
+#&gt; alternative hypothesis: true difference in means is not equal to 0
+#&gt; 95 percent confidence interval:
+#&gt;  -6778.653 -6734.922
+#&gt; sample estimates:
+#&gt; mean of x mean of y 
+#&gt;  2871.674  9628.462 
+#&gt; 
+#&gt; 
+#&gt; $cohens_d
+#&gt; [1] -124.1981</code></pre>
+</div>
+<div id="distance-preservation-analysis" class="section level2" number="7.3">
+<h2><span class="header-section-number">7.3</span> Distance Preservation
+Analysis</h2>
+<pre><code>#&gt; 
+#&gt; === DISTANCE PRESERVATION: SYNTHESIZED NON-EUCLIDEAN ===</code></pre>
+<div class="float">
+<img role="img" aria-label="plot of chunk distance_preservation" src="figure/distance_preservation-1.png" alt="plot of chunk distance_preservation" />
+<div class="figcaption">plot of chunk distance_preservation</div>
+</div>
+<pre><code>#&gt; 
+#&gt; Distance Preservation Statistics:
+#&gt;          Method                   Dataset Correlation R_squared
+#&gt; 1       Topolow Synthesized non-Euclidean   0.8938058 0.7988889
+#&gt; 2 Classical MDS Synthesized non-Euclidean   0.7988927 0.6382295
+#&gt; 3 Iterative MDS Synthesized non-Euclidean   0.8059096 0.6494903
+#&gt; 
+#&gt; === DISTANCE PRESERVATION: SWISS ROLL ===</code></pre>
+<div class="float">
+<img role="img" aria-label="plot of chunk distance_preservation" src="figure/distance_preservation-2.png" alt="plot of chunk distance_preservation" />
+<div class="figcaption">plot of chunk distance_preservation</div>
+</div>
+<pre><code>#&gt; 
+#&gt; Distance Preservation Statistics:
+#&gt;          Method    Dataset Correlation R_squared
+#&gt; 1       Topolow Swiss Roll   0.9788604 0.9581677
+#&gt; 2 Classical MDS Swiss Roll   0.9085225 0.8254131
+#&gt; 3 Iterative MDS Swiss Roll   0.9042658 0.8176966</code></pre>
+</div>
+</div>
+<div id="discussion" class="section level1" number="8">
+<h1><span class="header-section-number">8</span> Discussion</h1>
+<div id="key-findings" class="section level2" number="8.1">
+<h2><span class="header-section-number">8.1</span> Key Findings</h2>
+<p>Our comprehensive analysis reveals several important insights about
+the performance of embedding methods on non-Euclidean dissimilarity
+data:</p>
+<div id="non-euclidean-character-assessment" class="section level3" number="8.1.1">
+<h3><span class="header-section-number">8.1.1</span> 1. Non-Euclidean
+Character Assessment</h3>
+<p>The eigenvalue spectrum analysis provides crucial context for
+interpreting method performance:</p>
+<ul>
+<li><strong>Synthesized non-Euclidean Data</strong>: Shows deviation
+score of 0.6034, indicating moderate non-Euclidean structure</li>
+<li><strong>Swiss Roll Data</strong>: Shows deviation score of 0.2945,
+reflecting the manifold’s inherent geometric properties</li>
+</ul>
+</div>
+<div id="method-performance-characteristics" class="section level3" number="8.1.2">
+<h3><span class="header-section-number">8.1.2</span> 2. Method
+Performance Characteristics</h3>
+<p><strong>Topolow</strong> consistently demonstrates the best
+performance across both datasets, with its force-directed approach
+naturally handling missing data without requiring imputation. The
+method’s physics-inspired optimization appears particularly well-suited
+for sparse, non-Euclidean datasets.</p>
+<p><strong>Classical MDS</strong> provides the theoretical baseline for
+Euclidean approximation but requires complete data matrices through
+imputation. Performance varies significantly based on the quality of
+imputation and the degree of non-Euclidean structure.</p>
+<p><strong>Iterative MDS</strong> shows no stochasticity in our tests
+due to the fixed optimal initialization. The method achieves performance
+comparable to classical MDS.</p>
+</div>
+<div id="distance-preservation-quality" class="section level3" number="8.1.3">
+<h3><span class="header-section-number">8.1.3</span> 3. Distance
+Preservation Quality</h3>
+<p>The correlation analysis reveals how well each method preserves the
+original distance relationships. However, correlation is not a
+sufficient measure of accuracy and needs to be interpreted joint with
+measures of error such as MAE.</p>
+<pre><code>#&gt; Distance Preservation Summary (Correlation with Original Distances):
+#&gt;          Method                   Dataset Correlation R_squared
+#&gt; 1       Topolow Synthesized non-Euclidean   0.8938058 0.7988889
+#&gt; 2 Classical MDS Synthesized non-Euclidean   0.7988927 0.6382295
+#&gt; 3 Iterative MDS Synthesized non-Euclidean   0.8059096 0.6494903
+#&gt; 4       Topolow                Swiss Roll   0.9788604 0.9581677
+#&gt; 5 Classical MDS                Swiss Roll   0.9085225 0.8254131
+#&gt; 6 Iterative MDS                Swiss Roll   0.9042658 0.8176966
+#&gt; 
+#&gt; Mean Performance Across Dataset Types:
+#&gt; # A tibble: 3 × 3
+#&gt;   Method        Mean_Correlation Mean_R_squared
+#&gt;   &lt;chr&gt;                    &lt;dbl&gt;          &lt;dbl&gt;
+#&gt; 1 Classical MDS            0.854          0.732
+#&gt; 2 Iterative MDS            0.855          0.734
+#&gt; 3 Topolow                  0.936          0.879</code></pre>
+</div>
+</div>
+<div id="methodological-implications" class="section level2" number="8.2">
+<h2><span class="header-section-number">8.2</span> Methodological
+Implications</h2>
+<div id="for-sparse-data" class="section level3" number="8.2.1">
+<h3><span class="header-section-number">8.2.1</span> For Sparse
+Data</h3>
+<p>The analysis demonstrates that Topolow’s approach of using spring
+networks to handle missing measurements provides a principled
+alternative to imputation-based methods. This is particularly relevant
+for:</p>
+<ul>
+<li>Biological assay data with systematic missingness</li>
+<li>Network analysis with incomplete edge information</li>
+<li>High-throughput screening data with threshold censoring</li>
+</ul>
+</div>
+<div id="for-non-euclidean-data" class="section level3" number="8.2.2">
+<h3><span class="header-section-number">8.2.2</span> For Non-Euclidean
+Data</h3>
+<p>Different types of non-Euclidean structure pose varying
+challenges:</p>
+<ul>
+<li><strong>Systematic distortions</strong> (as in our Synthesized
+non-Euclidean data) can often be well-approximated by optimization</li>
+<li><strong>Manifold structure</strong> (as in Swiss Roll data) can be
+embedded into a metric space using the faithfull transformation or
+topolow</li>
+</ul>
+</div>
+<div id="parameter-optimization" class="section level3" number="8.2.3">
+<h3><span class="header-section-number">8.2.3</span> Parameter
+Optimization</h3>
+<p>The Euclidify wizard function automatically tunes parameters and
+optimizes the output coordinates, making it particularly valuable for
+non-expert users.</p>
+</div>
+</div>
+<div id="limitations-and-future-directions" class="section level2" number="8.3">
+<h2><span class="header-section-number">8.3</span> Limitations and
+Future Directions</h2>
+<div id="current-limitations" class="section level3" number="8.3.1">
+<h3><span class="header-section-number">8.3.1</span> Current
+Limitations</h3>
+<ol style="list-style-type: decimal">
+<li><strong>Computational Complexity</strong>: run-time of topolow
+scales poorly with dataset size, making parallel processing a
+bottleneck</li>
+</ol>
+</div>
+<div id="future-research-directions" class="section level3" number="8.3.2">
+<h3><span class="header-section-number">8.3.2</span> Future Research
+Directions</h3>
+<ol style="list-style-type: decimal">
+<li><strong>Scalability Improvements</strong>: Development for
+large-scale applications</li>
+<li><strong>Adaptive Dimensionality</strong>: Dynamic adjustment of
+embedding dimensions during optimization</li>
+<li><strong>Domain-Specific Evaluation</strong>: Metrics tailored to
+specific application domains (e.g., geography, phylogenetics,
+proteomics, psycometrics, operations research, …)</li>
+</ol>
+</div>
+</div>
+</div>
+<div id="conclusions" class="section level1" number="9">
+<h1><span class="header-section-number">9</span> Conclusions</h1>
+<p>This comprehensive evaluation demonstrates that the choice of
+embedding method significantly impacts results when dealing with
+non-Euclidean dissimilarity data. Key recommendations include:</p>
+<div id="for-practitioners" class="section level2" number="9.1">
+<h2><span class="header-section-number">9.1</span> For
+Practitioners</h2>
+<ol style="list-style-type: decimal">
+<li><strong>Use Euclidify for automated parameter optimization</strong>
+rather than manual tuning</li>
+<li><strong>Assess Euclidean deviation in your data</strong> using
+eigenvalue analysis before selecting methods</li>
+<li><strong>Evaluate distance preservation quality</strong>.</li>
+</ol>
+</div>
+<div id="for-method-developers" class="section level2" number="9.2">
+<h2><span class="header-section-number">9.2</span> For Method
+Developers</h2>
+<ol style="list-style-type: decimal">
+<li><strong>Missing data handling</strong> should be considered a core
+feature, not an afterthought</li>
+<li><strong>Robustness to non-Euclidean structure</strong> varies
+significantly between approaches</li>
+<li><strong>Automated parameter optimization</strong> is essential for
+practical adoption</li>
+<li><strong>Comprehensive evaluation frameworks</strong> like this
+vignette are needed for informed model selection</li>
+</ol>
+</div>
+<div id="scientific-impact" class="section level2" number="9.3">
+<h2><span class="header-section-number">9.3</span> Scientific
+Impact</h2>
+<p>The Topolow algorithm represents a meaningful contribution to the
+embedding literature by:</p>
+<ul>
+<li>Providing a principled approach to missing data that avoids
+imputation artifacts</li>
+<li>Demonstrating robustness across different types of non-Euclidean
+structure</li>
+<li>Offering automated optimization tools that make the method
+accessible to non-experts</li>
+<li>Establishing performance benchmarks against established methods</li>
+</ul>
+<p>This analysis provides a rigorous foundation for understanding when
+and how to apply force-directed embedding methods for challenging
+dissimilarity data, contributing to the broader goal of extracting
+meaningful low-dimensional representations from complex high-dimensional
+relationships.</p>
+</div>
+</div>
+<div id="session-information" class="section level1" number="10">
+<h1><span class="header-section-number">10</span> Session
+Information</h1>
+<pre><code>#&gt; R version 4.3.3 (2024-02-29)
+#&gt; Platform: aarch64-apple-darwin20 (64-bit)
+#&gt; Running under: macOS 15.4.1
+#&gt; 
+#&gt; Matrix products: default
+#&gt; BLAS:   /System/Library/Frameworks/Accelerate.framework/Versions/A/Frameworks/vecLib.framework/Versions/A/libBLAS.dylib 
+#&gt; LAPACK: /Library/Frameworks/R.framework/Versions/4.3-arm64/Resources/lib/libRlapack.dylib;  LAPACK version 3.11.0
+#&gt; 
+#&gt; locale:
+#&gt; [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+#&gt; 
+#&gt; time zone: America/New_York
+#&gt; tzcode source: internal
+#&gt; 
+#&gt; attached base packages:
+#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     
+#&gt; 
+#&gt; other attached packages:
+#&gt;  [1] RANN_2.6.2       smacof_2.1-7     e1071_1.7-16     colorspace_2.1-1 plotrix_3.8-4    MASS_7.3-60.0.1 
+#&gt;  [7] scales_1.4.0     reshape2_1.4.4   dplyr_1.1.4      ggplot2_3.5.2    topolow_2.0.0    testthat_3.2.3  
+#&gt; 
+#&gt; loaded via a namespace (and not attached):
+#&gt;   [1] splines_4.3.3      later_1.4.2        filelock_1.0.3     tibble_3.3.0       rpart_4.1.24      
+#&gt;   [6] lifecycle_1.0.4    Rdpack_2.6.4       doParallel_1.0.17  rprojroot_2.0.4    globals_0.17.0    
+#&gt;  [11] processx_3.8.6     lattice_0.22-7     backports_1.5.0    magrittr_2.0.3     Hmisc_5.2-3       
+#&gt;  [16] plotly_4.11.0      rmarkdown_2.29     yaml_2.3.10        remotes_2.5.0      httpuv_1.6.16     
+#&gt;  [21] askpass_1.2.1      sessioninfo_1.2.3  pkgbuild_1.4.7     reticulate_1.42.0  minqa_1.2.8       
+#&gt;  [26] RColorBrewer_1.1-3 pkgload_1.4.0      Rtsne_0.17         purrr_1.0.4        rgl_1.3.24        
+#&gt;  [31] nnet_7.3-20        ggrepel_0.9.6      listenv_0.9.1      gdata_3.0.1        ellipse_0.5.0     
+#&gt;  [36] vegan_2.7-1        umap_0.2.10.0      RSpectra_0.16-2    parallelly_1.44.0  Racmacs_1.2.9     
+#&gt;  [41] permute_0.9-8      commonmark_2.0.0   codetools_0.2-20   xml2_1.3.8         tidyselect_1.2.1  
+#&gt;  [46] shape_1.4.6.1      farver_2.1.2       lme4_1.1-37        base64enc_0.1-3    roxygen2_7.3.2    
+#&gt;  [51] jsonlite_2.0.0     mitml_0.4-5        ellipsis_0.3.2     Formula_1.2-5      survival_3.8-3    
+#&gt;  [56] iterators_1.0.14   systemfonts_1.2.3  foreach_1.5.2      tools_4.3.3        ragg_1.4.0        
+#&gt;  [61] Rcpp_1.1.0         glue_1.8.0         gridExtra_2.3      pan_1.9            xfun_0.52         
+#&gt;  [66] mgcv_1.9-1         usethis_3.1.0      withr_3.0.2        fastmap_1.2.0      xopen_1.0.1       
+#&gt;  [71] boot_1.3-31        openssl_2.3.3      callr_3.7.6        digest_0.6.37      rcmdcheck_1.4.0   
+#&gt;  [76] R6_2.6.1           mime_0.13          mice_3.17.0        textshaping_1.0.1  gtools_3.9.5      
+#&gt;  [81] weights_1.0.4      utf8_1.2.6         tidyr_1.3.1        generics_0.1.4     data.table_1.17.8 
+#&gt;  [86] class_7.3-23       prettyunits_1.2.0  httr_1.4.7         htmlwidgets_1.6.4  pkgconfig_2.0.3   
+#&gt;  [91] gtable_0.3.6       brio_1.1.5         htmltools_0.5.8.1  profvis_0.4.0      png_0.1-8         
+#&gt;  [96] wordcloud_2.6      reformulas_0.4.1   knitr_1.50         rstudioapi_0.17.1  coda_0.19-4.1     
+#&gt; [101] checkmate_2.3.2    nlme_3.1-168       curl_6.4.0         nloptr_2.2.1       proxy_0.4-27      
+#&gt; [106] cachem_1.1.0       stringr_1.5.1      parallel_4.3.3     miniUI_0.1.2       foreign_0.8-90    
+#&gt; [111] desc_1.4.3         pillar_1.11.0      grid_4.3.3         vctrs_0.6.5        urlchecker_1.0.1  
+#&gt; [116] promises_1.3.3     jomo_2.7-6         xtable_1.8-4       lhs_1.2.0          cluster_2.1.8.1   
+#&gt; [121] waldo_0.6.1        htmlTable_2.4.3    evaluate_1.0.4     cli_3.6.5          compiler_4.3.3    
+#&gt; [126] rlang_1.1.6        labeling_0.4.3     ps_1.9.1           plyr_1.8.9         fs_1.6.6          
+#&gt; [131] stringi_1.8.7      viridisLite_0.4.2  nnls_1.6           lazyeval_0.2.2     devtools_2.4.5    
+#&gt; [136] glmnet_4.1-8       Matrix_1.6-5       future_1.40.0      shiny_1.11.1       rbibutils_2.3     
+#&gt; [141] igraph_2.1.4       broom_1.0.8        memoise_2.0.1      ape_5.8-1          polynom_1.4-1</code></pre>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
